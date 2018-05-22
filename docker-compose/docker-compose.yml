@@ -1,0 +1,54 @@
+version: '2'
+
+services:
+  nginx:
+    image: 5d94da8de52b
+    ports:
+      - "8081:80"
+      - "443:443"
+    volumes:
+      - /web/lnmp-etc/nginx/conf/nginx.conf:/usr/local/nginx/conf/nginx.conf
+      - /web/lnmp-etc/nginx/conf/vhost:/usr/local/nginx/conf/vhost
+      - /web/lnmp-etc/nginx/logs/access.log:/usr/local/nginx/logs/access.log
+      - /web/lnmp-etc/nginx/logs/error.log:/usr/local/nginx/logs/error.log
+      - /web/html:/var/www/html
+    links:
+      - php:php
+    depends_on:
+      - php
+    networks:
+      - frontend 
+    container_name: nginx
+  php:
+    image: 754e8d4ddcec
+    expose:
+      - "9000"
+    volumes:
+      - /web/lnmp-etc/php/php.ini:/usr/local/php/lib/php.ini
+      - /web/lnmp-etc/php/www.conf:/usr/local/php/etc/php-fpm.d/www.conf
+      - /web/html:/var/www/html
+    links:
+      - mysql:mysql
+    depends_on:
+      - mysql
+    networks:
+      - frontend
+      - backend
+    container_name: php
+
+  mysql:
+    image: 0164c13b662c
+    ports:
+      - "3306:3306"
+    volumes:
+      - /web/lnmp-etc/mysql/etc:/etc/mysql
+      - /web/lnmp-etc/mysql/data:/var/lib/mysql
+      - /web/lnmp-etc/mysql/logs/error.log:/var/log/mysql/error.log
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: "dongxin"
+    container_name: mysql
+networks:
+  frontend:
+  backend:
