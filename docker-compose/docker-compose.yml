@@ -25,6 +25,7 @@ services:
       - "9000"
     volumes:
       - /web/lnmp-etc/php/php.ini:/usr/local/php/lib/php.ini
+      - /web/lnmp-etc/php/php-fpm.conf:/usr/local/php/etc/php-fpm.conf
       - /web/lnmp-etc/php/www.conf:/usr/local/php/etc/php-fpm.d/www.conf
       - /web/html:/var/www/html
     links:
